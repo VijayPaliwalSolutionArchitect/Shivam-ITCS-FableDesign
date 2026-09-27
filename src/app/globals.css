@@ -1,0 +1,310 @@
+@import "tailwindcss";
+
+/*
+  ─────────────────────────────────────────────────────────────
+  SHIVAM ITCS — Design Token System
+  Base: dark graphite (#0B0D10)
+  Signal blue (#3E7BFA): live / active system states ONLY
+  Commander amber (#F5A623): the Claude/Commander node ONLY
+  Type: Space Grotesk (display) · Source Sans 3 (body) ·
+        JetBrains Mono (system labels / data)
+  ─────────────────────────────────────────────────────────────
+*/
+
+@theme {
+  /* Graphite base + surface scale */
+  --color-base: #0b0d10;
+  --color-base-raised: #0e1116;
+  --color-surface-1: #10141b;
+  --color-surface-2: #151a23;
+  --color-surface-3: #1b212d;
+  --color-line: #1e242f;
+  --color-line-strong: #2a3241;
+
+  /* Signal blue — live/active system states */
+  --color-signal-50: #eef4ff;
+  --color-signal-100: #d9e6ff;
+  --color-signal-200: #b9d0ff;
+  --color-signal-300: #8ab2ff;
+  --color-signal-400: #5f93ff;
+  --color-signal-500: #3e7bfa;
+  --color-signal-600: #2b60db;
+  --color-signal-700: #234bb0;
+  --color-signal-800: #1e3f8c;
+  --color-signal-900: #1a3670;
+
+  /* Commander amber — reserved for the Commander/Claude hierarchy */
+  --color-commander-50: #fff8e9;
+  --color-commander-100: #ffeecc;
+  --color-commander-200: #ffdb94;
+  --color-commander-300: #fdc45c;
+  --color-commander-400: #f9b23c;
+  --color-commander-500: #f5a623;
+  --color-commander-600: #d98a12;
+  --color-commander-700: #b5690e;
+  --color-commander-800: #93520f;
+  --color-commander-900: #7a4411;
+
+  /* Text */
+  --color-ink: #e9edf5;
+  --color-ink-dim: #a7b0c3;
+  --color-ink-mute: #6c7789;
+
+  /* Semantic status */
+  --color-ok: #3ddc97;
+  --color-warn: #f5a623;
+  --color-critical: #ff5d5d;
+
+  /* Typography */
+  --font-display: var(--font-space-grotesk), "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-source-sans), "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, monospace;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Radii */
+  --radius-node: 1.25rem;
+
+  /* Section rhythm */
+  --spacing-section: 7.5rem;
+  --spacing-section-tight: 4.5rem;
+
+  /* Animations */
+  --animate-marquee: marquee 42s linear infinite;
+  --animate-node-pulse: node-pulse 2.6s ease-in-out infinite;
+  --animate-dash-flow: dash-flow 1.4s linear infinite;
+  --animate-blink: blink 1.1s steps(2, start) infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes node-pulse {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.06); }
+  }
+  @keyframes dash-flow {
+    to { stroke-dashoffset: -12; }
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-base);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-signal-500) 32%, transparent);
+  color: var(--color-ink);
+}
+
+/* Focus ring — visible on every interactive element.
+   Explicit selectors (not :where) so Tailwind preflight's lower-
+   specificity outline reset can never win the cascade here. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-signal-400);
+  outline-offset: 3px;
+}
+
+/* Skip link */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  transform: translateY(-250%);
+  background: var(--color-signal-500);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 0.375rem;
+  transition: transform 150ms var(--ease-out-expo);
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ── Typography helpers ───────────────────────────────────── */
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.text-system-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+}
+
+/* Section eyebrow: mono kicker with node-dot */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-signal-300);
+}
+.eyebrow::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--color-signal-500);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-signal-500) 80%, transparent);
+}
+.eyebrow-commander {
+  color: var(--color-commander-300);
+}
+.eyebrow-commander::before {
+  background: var(--color-commander-500);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-commander-500) 80%, transparent);
+}
+
+/* ── Surfaces ─────────────────────────────────────────────── */
+
+.panel {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-surface-1) 92%, transparent), color-mix(in srgb, var(--color-base-raised) 92%, transparent));
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-node);
+  position: relative;
+}
+
+/* Corner node-ticks, like a systems diagram alignment mark */
+.panel-ticks::before,
+.panel-ticks::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: var(--color-line-strong);
+  border-style: solid;
+  pointer-events: none;
+}
+.panel-ticks::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1px 0 0 1px;
+  border-top-left-radius: var(--radius-node);
+}
+.panel-ticks::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 1px 1px 0;
+  border-bottom-right-radius: var(--radius-node);
+}
+
+/* Recurring node-grid backdrop for the systemic motif */
+.bg-node-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-signal-500) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-signal-500) 6%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+.bg-node-grid-fine {
+  background-image: radial-gradient(color-mix(in srgb, var(--color-ink-mute) 22%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Terminal-style readout line */
+.readout {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-ink-dim);
+}
+
+/* Scroll hairline between sections */
+.section-rule {
+  border-top: 1px solid color-mix(in srgb, var(--color-line) 80%, transparent);
+}
+
+/* Marquee */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: var(--animate-marquee);
+}
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+/* Card hover lift (motion-safe only) */
+@media (prefers-reduced-motion: no-preference) {
+  .card-hover {
+    transition: transform 380ms var(--ease-out-expo), border-color 380ms var(--ease-out-expo), background-color 380ms var(--ease-out-expo);
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--color-signal-500) 38%, var(--color-line));
+  }
+  .card-hover:hover .card-node {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .card-node {
+    opacity: 0.35;
+    transform: scale(0.92);
+    transition: opacity 380ms var(--ease-out-expo), transform 380ms var(--ease-out-expo);
+  }
+}
+
+/* Visually hidden but screen-reader available */
+.sr-only-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ── Reduced motion: fully static ─────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .marquee-track {
+    animation: none;
+    transform: none;
+  }
+}
