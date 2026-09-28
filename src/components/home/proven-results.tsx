@@ -1,18 +1,45 @@
 import { provenResults } from "@/lib/content/home";
-import { Card, Reveal, Section, SectionHeader, Stat } from "@/components/ui";
+import { Reveal, Section, SectionHeader } from "@/components/ui";
+import { CountUp, SpotlightCard } from "@/components/fx";
+
+/* Map stat labels to numeric values for the count-up */
+const NUMERIC: Record<string, { value: number; prefix?: string; suffix?: string }> = {
+  "AI Cost Reduction": { value: 70, prefix: "40–", suffix: "%" },
+  "Years Experience": { value: 18, suffix: "+" },
+  "Product Domains": { value: 9 },
+  "US Companies Served": { value: 2 },
+};
 
 export function ProvenResults() {
   return (
     <>
       <Section className="py-16 sm:py-24" labelledBy="results-title">
-        <SectionHeader id="results-title" eyebrow={provenResults.eyebrow} title={provenResults.title} />
+        <SectionHeader id="results-title" eyebrow={provenResults.eyebrow} title={<span className="text-gradient">{provenResults.title}</span>} />
 
-        <div className="panel panel-ticks mt-12 grid gap-8 p-8 sm:grid-cols-2 sm:p-10 lg:grid-cols-4">
-          {provenResults.stats.map((s, i) => (
-            <Reveal key={s.label} delay={i * 0.07}>
-              <Stat value={s.value} unit={s.unit} label={s.label} />
-            </Reveal>
-          ))}
+        <div className="glass grad-border mt-12 grid gap-8 rounded-3xl p-8 sm:grid-cols-2 sm:p-10 lg:grid-cols-4">
+          {provenResults.stats.map((s, i) => {
+            const n = NUMERIC[s.label];
+            return (
+              <Reveal key={s.label} delay={i * 0.07}>
+                <div className="relative">
+                  <p className="font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+                    {n ? (
+                      <>
+                        {n.prefix}
+                        <CountUp value={n.value} className="tabular-nums" />
+                        {n.suffix}
+                      </>
+                    ) : (
+                      s.value
+                    )}
+                    {s.unit && !n && <span className="text-signal-400">{s.unit}</span>}
+                  </p>
+                  <p className="mt-1.5 text-sm font-medium text-ink-dim">{s.label}</p>
+                  <span aria-hidden="true" className="mt-4 block h-px w-12 bg-gradient-to-r from-signal-500 to-transparent" />
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
       </Section>
 
@@ -32,12 +59,13 @@ export function ProvenResults() {
           </div>
 
           <Reveal delay={0.15}>
-            <div className="panel panel-ticks bg-node-grid-fine h-full p-7">
-              <p className="text-system-label">Verification checklist</p>
-              <ul className="mt-5 space-y-3.5">
+            <div className="glass grad-border bg-node-grid-fine relative h-full overflow-hidden rounded-3xl p-7">
+              <div aria-hidden="true" className="scanline" />
+              <p className="text-system-label relative">Verification checklist</p>
+              <ul className="relative mt-5 space-y-3.5">
                 {provenResults.trust.checklist.map((item) => (
                   <li key={item} className="flex items-start gap-3 text-[0.95rem] text-ink-dim">
-                    <span aria-hidden="true" className="mt-0.5 font-mono text-ok">✓</span>
+                    <span aria-hidden="true" className="mt-0.5 font-mono text-ok drop-shadow-[0_0_6px_color-mix(in_srgb,var(--color-ok)_60%,transparent)]">✓</span>
                     {item}
                   </li>
                 ))}
@@ -49,17 +77,17 @@ export function ProvenResults() {
 
       {/* Why partner with us */}
       <Section className="py-16 sm:py-24" labelledBy="why-title">
-        <h2 id="why-title" className="eyebrow font-display !text-lg !tracking-[0.06em] sm:!text-xl">
+        <h2 id="why-title" className="font-display eyebrow !text-lg !tracking-[0.06em] sm:!text-xl">
           {provenResults.why.eyebrow}
         </h2>
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {provenResults.why.cards.map((c, i) => (
             <Reveal key={c.title} delay={(i % 3) * 0.07}>
-              <Card className="h-full">
+              <SpotlightCard className="h-full !p-6">
                 <span aria-hidden="true" className="text-2xl">{c.icon}</span>
                 <h3 className="font-display mt-3 text-lg font-semibold text-ink">{c.title}</h3>
                 <p className="mt-2 text-[0.95rem] leading-relaxed text-ink-dim">{c.body}</p>
-              </Card>
+              </SpotlightCard>
             </Reveal>
           ))}
         </div>

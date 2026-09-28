@@ -308,3 +308,323 @@ summary:focus-visible,
     transform: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   HI-FI FX LAYER — glassmorphism · gradient borders · aurora ·
+   spotlight · shimmer · noise. All tokens from the system;
+   all motion disabled under prefers-reduced-motion above.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Frosted glass surface (nav, mega panels, floating cards) */
+.glass {
+  background: color-mix(in srgb, var(--color-surface-1) 62%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
+}
+
+.glass-deep {
+  background: color-mix(in srgb, var(--color-base) 72%, transparent);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 9%, transparent);
+}
+
+/* Gradient hairline border via mask composite */
+.grad-border {
+  position: relative;
+}
+.grad-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-signal-500) 55%, transparent),
+    color-mix(in srgb, var(--color-ink) 6%, transparent) 38%,
+    color-mix(in srgb, var(--color-commander-500) 40%, transparent)
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+/* animated variant — a light pulse travelling the border */
+@media (prefers-reduced-motion: no-preference) {
+  .grad-border-flow::before {
+    background: linear-gradient(
+      115deg,
+      color-mix(in srgb, var(--color-signal-500) 60%, transparent),
+      color-mix(in srgb, var(--color-ink) 5%, transparent) 30%,
+      color-mix(in srgb, var(--color-commander-500) 50%, transparent) 50%,
+      color-mix(in srgb, var(--color-ink) 5%, transparent) 70%,
+      color-mix(in srgb, var(--color-signal-500) 60%, transparent)
+    );
+    background-size: 300% 300%;
+    animation: border-flow 7s linear infinite;
+  }
+  @keyframes border-flow {
+    to {
+      background-position: 300% 0;
+    }
+  }
+}
+
+/* Gradient display text */
+.text-gradient {
+  background: linear-gradient(92deg, var(--color-signal-300) 0%, var(--color-ink) 45%, var(--color-commander-400) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.text-gradient-signal {
+  background: linear-gradient(92deg, var(--color-signal-300), var(--color-signal-500));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Aurora — layered ambient gradients for hero/CTA backdrops */
+.aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.aurora::before,
+.aurora::after {
+  content: "";
+  position: absolute;
+  width: 60vmax;
+  height: 60vmax;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.16;
+  will-change: transform;
+}
+.aurora::before {
+  background: radial-gradient(circle, var(--color-signal-500), transparent 60%);
+  top: -28vmax;
+  right: -18vmax;
+}
+.aurora::after {
+  background: radial-gradient(circle, var(--color-commander-500), transparent 60%);
+  bottom: -30vmax;
+  left: -20vmax;
+  opacity: 0.1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .aurora::before {
+    animation: aurora-drift 26s ease-in-out infinite alternate;
+  }
+  .aurora::after {
+    animation: aurora-drift 32s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes aurora-drift {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(-9vmax, 7vmax, 0) scale(1.18);
+    }
+  }
+}
+
+/* Film-grain noise overlay for depth (SVG data-uri, zero requests) */
+.noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+/* Shimmer sweep for primary CTAs */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    color-mix(in srgb, var(--color-ink) 38%, transparent) 50%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .shimmer:hover::after {
+    animation: shimmer-sweep 0.9s var(--ease-out-expo);
+  }
+  @keyframes shimmer-sweep {
+    to {
+      transform: translateX(120%);
+    }
+  }
+}
+
+/* Spotlight card — mouse-tracked radial highlight (CSS vars set from JS) */
+.spotlight {
+  position: relative;
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--color-signal-500) 13%, transparent),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 400ms var(--ease-out-expo);
+  pointer-events: none;
+}
+.spotlight:hover::before,
+.spotlight:focus-within::before {
+  opacity: 1;
+}
+
+/* Conic glow behind hero headline */
+.headline-halo {
+  position: absolute;
+  inset: -8% -6%;
+  background:
+    radial-gradient(42% 55% at 22% 30%, color-mix(in srgb, var(--color-signal-500) 16%, transparent), transparent 70%),
+    radial-gradient(38% 48% at 82% 68%, color-mix(in srgb, var(--color-commander-500) 12%, transparent), transparent 70%);
+  filter: blur(38px);
+  pointer-events: none;
+}
+
+/* Section edge glow — a faint horizon line under section headers */
+.horizon {
+  position: relative;
+}
+.horizon::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-signal-500) 45%, transparent), transparent);
+}
+
+/* Floating node chip — decorative satellite */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .float-y {
+    animation: float-y 7s ease-in-out infinite;
+  }
+  .float-y-slow {
+    animation: float-y 11s ease-in-out infinite;
+  }
+}
+
+/* Data-ticker (metrics strip) */
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.ticker-track {
+  display: flex;
+  width: max-content;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ticker-track {
+    animation: ticker 30s linear infinite;
+  }
+  .ticker:hover .ticker-track {
+    animation-play-state: paused;
+  }
+}
+
+/* Logo/credibility marquee (reuse marquee keyframes) */
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Image slider chrome */
+.slider-nav-btn {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 70%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: var(--color-ink-dim);
+  transition: color 200ms, border-color 200ms, transform 200ms var(--ease-out-expo);
+}
+.slider-nav-btn:hover {
+  color: var(--color-ink);
+  border-color: color-mix(in srgb, var(--color-signal-500) 55%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .slider-nav-btn:hover {
+    transform: scale(1.06);
+  }
+}
+.slider-dot {
+  width: 1.5rem;
+  height: 0.25rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-ink) 14%, transparent);
+  transition: background 250ms;
+}
+.slider-dot[data-active="true"] {
+  background: linear-gradient(90deg, var(--color-signal-400), var(--color-commander-400));
+}
+
+/* Scanline sweep — decorative, for terminal/panels */
+@keyframes scan {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(400%); }
+}
+.scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 28%;
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--color-signal-500) 5%, transparent), transparent);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .scanline {
+    animation: scan 5.5s linear infinite;
+  }
+}
+
+/* Bento grid */
+.bento {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(6, 1fr);
+}
+.bento > .bento-2 { grid-column: span 2; }
+.bento > .bento-3 { grid-column: span 3; }
+.bento > .bento-4 { grid-column: span 4; }
+.bento > .bento-6 { grid-column: span 6; }
+@media (max-width: 767px) {
+  .bento > * { grid-column: span 6 !important; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .bento { grid-template-columns: repeat(2, 1fr); }
+  .bento > .bento-2, .bento > .bento-3, .bento > .bento-4, .bento > .bento-6 { grid-column: span 2; }
+}

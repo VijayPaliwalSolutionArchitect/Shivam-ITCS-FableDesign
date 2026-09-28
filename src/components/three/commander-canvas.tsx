@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { Component, useEffect, useRef, useState, type ReactNode } from "react";
 import { usePrefersReducedMotion, useIdleAfterLoad } from "@/lib/motion";
-import { initScrollDrivers, pointerState } from "./scroll-store";
+import { pointerState } from "./scroll-store";
 import { CommanderDiagramStatic } from "./commander-diagram-static";
 
 /**
@@ -47,19 +47,26 @@ export function CommanderBackdrop({ dim = true }: { dim?: boolean }) {
 
   // GSAP ScrollTrigger drivers + pointer parallax feed
   useEffect(() => {
-    if (reduced || !hasWebgl) return;
-    const cleanup = initScrollDrivers();
-    setDriversReady(true);
+    if (reduced || !hasWebgl || !idle) return;
+    let cancelled = false;
+    let cleanup: (() => void) | undefined;
     const onPointer = (e: PointerEvent) => {
       pointerState.x = (e.clientX / window.innerWidth - 0.5) * 2;
       pointerState.y = -(e.clientY / window.innerHeight - 0.5) * 2;
     };
-    window.addEventListener("pointermove", onPointer, { passive: true });
+    void import("./scroll-drivers").then(({ initScrollDrivers }) => {
+      if (cancelled) return;
+      cleanup = initScrollDrivers();
+      window.addEventListener("pointermove", onPointer, { passive: true });
+      setDriversReady(true);
+    }).catch(() => setFailed(true));
+
     return () => {
-      cleanup();
+      cancelled = true;
+      cleanup?.();
       window.removeEventListener("pointermove", onPointer);
     };
-  }, [reduced, hasWebgl]);
+  }, [idle, reduced, hasWebgl]);
 
   // Mount the canvas only after load + idle → LCP is text-first
   useEffect(() => {
