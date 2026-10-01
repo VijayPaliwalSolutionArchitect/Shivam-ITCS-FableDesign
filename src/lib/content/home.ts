@@ -8,7 +8,7 @@ export const hero = {
   titleLine1: "We Build Agents That Work.",
   titleLine2: "Not Chatbots.",
   subtitle:
-    "We architect, build, and deploy autonomous multi-agent AI systems for healthcare, education, SaaS, and enterprise — from Nathdwara, India. For the world.",
+    "We architect, build, and deploy autonomous multi-agent AI systems — a Commander architecture with cost-aware model fallback across OpenAI, Claude, ChatGPT, GLM and local models, plus RPA and Python automation — delivered on .NET Core 8/10 WebAPIs, Next.js and PostgreSQL, for healthcare, education, SaaS and enterprise. From Nathdwara, India. For the world.",
   ctaPrimary: { label: "Get a Cost Audit", href: "/#contact" },
   ctaSecondary: { label: "View Case Studies", href: "/work" },
   stats: [
