@@ -10,19 +10,18 @@ import { Industries } from "@/components/home/industries";
 import { TechStack } from "@/components/home/tech-stack";
 import { CommanderArchitecture } from "@/components/home/commander-architecture";
 import { SelectedWork } from "@/components/home/selected-work";
+import { Testimonials } from "@/components/home/testimonials";
 import { ProvenResults } from "@/components/home/proven-results";
 import { Founders } from "@/components/home/founders";
 import { CtaSection } from "@/components/home/cta";
 
 /**
- * Homepage — order preserved from the production site:
- * Hero → Market Moment → Thick Agents → Full Stack First →
- * Capability Map → Why SaaS Overpays → Industries → Tech Stack →
- * Commander Architecture (flagship) → Selected Work → Proven Results →
- * Founders → CTA.
- *
- * The CommanderBackdrop is the fixed, persistent R3F node graph that
- * follows the user down the page; sections sit above it on z-1.
+ * Homepage — section order preserved from the production site, with two
+ * new showcase layers (product gallery slider + client-impact slider):
+ * Hero → Market Moment → Thick Agents → Full Stack First → Capability Map →
+ * Why SaaS Overpays → 9 Domains → Industries → Tech Stack → Commander
+ * Architecture (flagship) → Selected Work (gallery) → Client Impact →
+ * Proven Results → Founders → CTA.
  */
 export default function HomePage() {
   return (
@@ -40,6 +39,7 @@ export default function HomePage() {
         <TechStack />
         <CommanderArchitecture />
         <SelectedWork />
+        <Testimonials />
         <ProvenResults />
         <Founders />
         <CtaSection />

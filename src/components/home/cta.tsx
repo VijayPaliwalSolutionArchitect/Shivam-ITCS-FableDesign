@@ -1,34 +1,30 @@
 import { cta } from "@/lib/content/home";
 import { Reveal, Section } from "@/components/ui";
+import { GlowButton } from "@/components/fx";
 
 export function CtaSection() {
   return (
-    <Section id="contact" className="py-20 sm:py-28" labelledBy="cta-title">
+    <Section id="contact" className="pb-24 pt-8 sm:pb-32" labelledBy="cta-title">
       <Reveal>
-        <div className="panel panel-ticks relative overflow-hidden p-8 text-center sm:p-16">
-          {/* node-grid glow — the systemic motif closes the page */}
-          <div aria-hidden="true" className="bg-node-grid absolute inset-0 opacity-60" />
+        <div className="grad-border-flow glass relative overflow-hidden rounded-3xl p-8 text-center sm:p-16">
+          <div aria-hidden="true" className="aurora" />
+          <div aria-hidden="true" className="noise absolute inset-0" />
           <div
             aria-hidden="true"
-            className="absolute left-1/2 top-0 h-40 w-[36rem] -translate-x-1/2 rounded-full bg-signal-500/15 blur-3xl"
+            className="absolute left-1/2 top-0 h-44 w-[38rem] -translate-x-1/2 rounded-full bg-signal-500/20 blur-3xl"
           />
           <div className="relative">
             <p className="eyebrow justify-center">{cta.eyebrow}</p>
             <h2
               id="cta-title"
-              className="font-display mx-auto mt-4 max-w-2xl text-3xl font-bold leading-[1.05] text-ink sm:text-5xl"
+              className="font-display mx-auto mt-4 max-w-2xl text-3xl font-bold leading-[1.05] sm:text-5xl"
             >
-              {cta.title}
+              <span className="text-gradient">{cta.title}</span>
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-ink-dim">{cta.body}</p>
 
             <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
-              <a
-                href={cta.primary.href}
-                className="font-display rounded-lg bg-signal-500 px-7 py-4 text-lg font-semibold text-white shadow-lg shadow-signal-900/40 transition-colors hover:bg-signal-400"
-              >
-                🚀 {cta.primary.label}
-              </a>
+              <GlowButton href={cta.primary.href}>🚀 {cta.primary.label}</GlowButton>
             </div>
 
             <p className="readout mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">

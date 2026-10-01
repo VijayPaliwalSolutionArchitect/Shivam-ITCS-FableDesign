@@ -26,12 +26,18 @@ function PipelineMirror() {
   const rafRef = useRef(0);
 
   useEffect(() => {
-    const tick = () => {
-      setActive(stageFor(scrollState.archProgress));
-      rafRef.current = requestAnimationFrame(tick);
+    const updateOnScroll = () => {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(() => {
+        setActive(stageFor(scrollState.archProgress));
+      });
     };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
+    updateOnScroll();
+    window.addEventListener("scroll", updateOnScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", updateOnScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   return (
