@@ -291,6 +291,96 @@ summary:focus-visible,
   border-width: 0;
 }
 
+/* ── Motion layer: ambient + signature effects ─────────────── */
+
+/* Aurora — large blurred colour fields drifting behind everything */
+@keyframes aurora-drift {
+  0%   { transform: translate3d(-8%, -6%, 0) scale(1.05); }
+  50%  { transform: translate3d(8%, 6%, 0) scale(1.22); }
+  100% { transform: translate3d(-8%, -6%, 0) scale(1.05); }
+}
+.aurora-blob {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(90px);
+  will-change: transform;
+  animation: aurora-drift 24s ease-in-out infinite;
+}
+
+/* A single scan line sweeping the viewport */
+@keyframes scan-sweep {
+  from { transform: translateY(-40%); }
+  to   { transform: translateY(140%); }
+}
+.scan-sweep {
+  animation: scan-sweep 9s linear infinite;
+  will-change: transform;
+}
+
+/* CRT scanlines overlay */
+.scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-ink) 5%, transparent) 0px,
+    color-mix(in srgb, var(--color-ink) 5%, transparent) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* Film grain overlay */
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* Light sheen sweeping across the headline */
+@keyframes text-sheen {
+  0%   { background-position: 210% 0; }
+  55%  { background-position: -130% 0; }
+  100% { background-position: -130% 0; }
+}
+.text-sheen {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-ink) 0%,
+    var(--color-ink) 42%,
+    #cfe0ff 50%,
+    var(--color-ink) 58%,
+    var(--color-ink) 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: text-sheen 6.5s ease-in-out infinite;
+}
+
+/* Pointer-follow glow (set --mx / --my from JS) */
+.spotlight-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 380ms var(--ease-out-expo);
+  background: radial-gradient(
+    460px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--color-signal-500) 18%, transparent),
+    transparent 68%
+  );
+}
+@media (hover: hover) {
+  .spotlight:hover .spotlight-glow { opacity: 1; }
+  .spotlight-commander:hover .spotlight-glow {
+    background: radial-gradient(
+      460px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in srgb, var(--color-commander-500) 16%, transparent),
+      transparent 68%
+    );
+    opacity: 1;
+  }
+}
+
 /* ── Reduced motion: fully static ─────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   html {
